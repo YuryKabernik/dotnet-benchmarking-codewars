@@ -25,7 +25,7 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "dotnet restore BenchMarking/Benchmarking.sln",
 
-	// Configure tool-specific properties.
+	// Additional container features.
 	"features": {
 		"ghcr.io/devcontainers/features/git:1": {}
 	},

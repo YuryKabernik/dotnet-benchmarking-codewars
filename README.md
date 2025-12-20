@@ -26,7 +26,7 @@ The dev container includes:
 If you prefer to develop locally, ensure you have .NET 6.0 SDK or later installed.
 
 ## Codewars solutions
-Own kata solutions are decoreted with `[Benchmark(Baseline = true)]`.
+Own kata solutions are decorated with `[Benchmark(Baseline = true)]`.
 Each `Baseline` method is compared with top 3 kata solutions by memory consumption and execution performance.
 
 ## Benchmark run
