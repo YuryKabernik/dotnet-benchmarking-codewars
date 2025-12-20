@@ -1,4 +1,8 @@
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Benchmarking.ParallelAsync
 {
@@ -23,11 +27,10 @@ namespace Benchmarking.ParallelAsync
         {
             var results = new int[items.Length];
             
-            await Parallel.ForEachAsync(items, async (item, cancellationToken) =>
+            await Parallel.ForEachAsync(items.Select((item, index) => new { item, index }), async (pair, cancellationToken) =>
             {
-                var index = Array.IndexOf(items, item);
-                var result = await SimulateNetworkCallAsync(item);
-                results[index] = result;
+                var result = await SimulateNetworkCallAsync(pair.item);
+                results[pair.index] = result;
             });
             
             return results;
@@ -51,7 +54,6 @@ namespace Benchmarking.ParallelAsync
         /// </summary>
         public static async Task<int[]> ProcessWithPartitionedTaskWhenAll(int[] items)
         {
-            var partitionSize = Math.Max(1, items.Length / Environment.ProcessorCount);
             var partitions = Partitioner.Create(items, loadBalance: true);
             
             var tasks = partitions.GetPartitions(Environment.ProcessorCount)
