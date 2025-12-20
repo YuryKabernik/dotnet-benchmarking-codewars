@@ -17,6 +17,23 @@ namespace Benchmarking.ParallelAsync
         }
 
         /// <summary>
+        /// Processes a partition of items asynchronously
+        /// </summary>
+        private static async Task<List<int>> ProcessPartitionAsync(IEnumerator<int> partition)
+        {
+            var partitionResults = new List<int>();
+            using (partition)
+            {
+                while (partition.MoveNext())
+                {
+                    var result = await SimulateNetworkCallAsync(partition.Current);
+                    partitionResults.Add(result);
+                }
+            }
+            return partitionResults;
+        }
+
+        /// <summary>
         /// Process items using Parallel.ForEachAsync
         /// </summary>
         public static async Task<int[]> ProcessWithParallelForEachAsync(int[] items, int degreeOfParallelism)
@@ -57,17 +74,20 @@ namespace Benchmarking.ParallelAsync
         }
 
         /// <summary>
-        /// Process items using PLINQ
+        /// Process items using PLINQ with partitioning
         /// </summary>
         public static async Task<int[]> ProcessWithPlinq(int[] items, int degreeOfParallelism)
         {
-            var tasks = items
+            var partitions = Partitioner.Create(items, loadBalance: true);
+            
+            var tasks = partitions.GetPartitions(degreeOfParallelism)
                 .AsParallel()
                 .WithDegreeOfParallelism(degreeOfParallelism)
-                .Select(item => SimulateNetworkCallAsync(item))
+                .Select(partition => ProcessPartitionAsync(partition))
                 .ToArray();
             
-            return await Task.WhenAll(tasks);
+            var allResults = await Task.WhenAll(tasks);
+            return allResults.SelectMany(r => r).ToArray();
         }
 
         /// <summary>
@@ -78,19 +98,7 @@ namespace Benchmarking.ParallelAsync
             var partitions = Partitioner.Create(items, loadBalance: true);
             
             var tasks = partitions.GetPartitions(degreeOfParallelism)
-                .Select(async partition =>
-                {
-                    var partitionResults = new List<int>();
-                    using (partition)
-                    {
-                        while (partition.MoveNext())
-                        {
-                            var result = await SimulateNetworkCallAsync(partition.Current);
-                            partitionResults.Add(result);
-                        }
-                    }
-                    return partitionResults;
-                })
+                .Select(partition => ProcessPartitionAsync(partition))
                 .ToArray();
             
             var allResults = await Task.WhenAll(tasks);
