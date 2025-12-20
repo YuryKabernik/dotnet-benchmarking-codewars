@@ -42,7 +42,7 @@ namespace Benchmarking.ParallelAsync
         /// </summary>
         public static async Task<int[]> ProcessWithSemaphoreTaskWhenAll(int[] items)
         {
-            var semaphore = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
+            using var semaphore = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
             
             var tasks = items.Select(async item =>
             {
