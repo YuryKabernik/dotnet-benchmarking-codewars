@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Benchmarking.ParallelAsync;
@@ -10,12 +8,12 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
     /// Benchmarks for comparing different parallel async processing approaches
     /// for asynchronous network operations (simulated with Task.Delay)
     /// </summary>
-    [SimpleJob(RuntimeMoniker.Net60)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     public class ParallelAsyncBenchmark
     {
         private int[] _items = null!;
 
-        [Params(10, 20)]
+        [Params(10, 75, 100)]
         public int ItemCount;
 
         [GlobalSetup]

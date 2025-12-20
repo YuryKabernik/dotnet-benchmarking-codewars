@@ -11,7 +11,7 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
     // "a" is ANSCII 65
     // "z" is ANSCII 90
 
-    [SimpleJob(RuntimeMoniker.Net60)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     public class AlphabetPositionBenchmark
     {
         [Params(
