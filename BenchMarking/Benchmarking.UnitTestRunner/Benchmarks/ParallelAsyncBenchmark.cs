@@ -25,6 +25,12 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
+        public async Task<int[]> SemaphoreTaskWhenAll()
+        {
+            return await ParallelAsyncProcessor.ProcessWithSemaphoreTaskWhenAll(_items);
+        }
+
+        [Benchmark]
         public async Task<int[]> ParallelForEachAsync()
         {
             return await ParallelAsyncProcessor.ProcessWithParallelForEachAsync(_items);

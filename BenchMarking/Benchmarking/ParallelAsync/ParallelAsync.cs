@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Benchmarking.ParallelAsync
@@ -34,6 +35,29 @@ namespace Benchmarking.ParallelAsync
             });
             
             return results;
+        }
+
+        /// <summary>
+        /// Process items using Semaphore with Select=>Task and Task.WhenAll
+        /// </summary>
+        public static async Task<int[]> ProcessWithSemaphoreTaskWhenAll(int[] items)
+        {
+            var semaphore = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
+            
+            var tasks = items.Select(async item =>
+            {
+                await semaphore.WaitAsync();
+                try
+                {
+                    return await SimulateNetworkCallAsync(item);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            }).ToArray();
+            
+            return await Task.WhenAll(tasks);
         }
 
         /// <summary>
