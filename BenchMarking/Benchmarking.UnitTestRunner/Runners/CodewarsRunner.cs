@@ -68,5 +68,11 @@ namespace Benchmarking.UnitTestRunner.Runners
         {
             BenchmarkRunner.Run<SimplePigLatinBenchmark>(this.config);
         }
+
+        [Fact]
+        public void ParallelAsyncBenchmark()
+        {
+            BenchmarkRunner.Run<ParallelAsyncBenchmark>(this.config);
+        }
     }
 }
