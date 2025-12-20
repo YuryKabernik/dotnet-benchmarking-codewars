@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Benchmarking.ParallelAsync;
