@@ -82,7 +82,6 @@ namespace Benchmarking.ParallelAsync
             
             var tasks = partitions.GetPartitions(degreeOfParallelism)
                 .AsParallel()
-                .WithDegreeOfParallelism(degreeOfParallelism)
                 .Select(partition => ProcessPartitionAsync(partition))
                 .ToArray();
             
