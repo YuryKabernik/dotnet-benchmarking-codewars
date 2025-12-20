@@ -1,0 +1,35 @@
+{
+	"name": ".NET Benchmarking",
+	"image": "mcr.microsoft.com/devcontainers/dotnet:1-6.0",
+	
+	// Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-dotnettools.csharp",
+				"ms-dotnettools.csdevkit",
+				"formulahendry.dotnet-test-explorer",
+				"jongrant.csharpsortusings",
+				"kreativ-software.csharpextensions"
+			],
+			"settings": {
+				"omnisharp.enableRoslynAnalyzers": true,
+				"omnisharp.enableEditorConfigSupport": true
+			}
+		}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "dotnet restore BenchMarking/Benchmarking.sln",
+
+	// Additional container features.
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+
+	// Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	"remoteUser": "vscode"
+}
