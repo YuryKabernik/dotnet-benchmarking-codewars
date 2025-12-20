@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Benchmarking.ParallelAsync;
@@ -16,6 +18,9 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
         [Params(10, 75, 100)]
         public int ItemCount;
 
+        [Params(4, 8, 16)]
+        public int DegreeOfParallelism;
+
         [GlobalSetup]
         public void Setup()
         {
@@ -25,25 +30,25 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
         [Benchmark(Baseline = true)]
         public async Task<int[]> SemaphoreTaskWhenAll()
         {
-            return await ParallelAsyncProcessor.ProcessWithSemaphoreTaskWhenAll(_items);
+            return await ParallelAsyncProcessor.ProcessWithSemaphoreTaskWhenAll(_items, DegreeOfParallelism);
         }
 
         [Benchmark]
         public async Task<int[]> ParallelForEachAsync()
         {
-            return await ParallelAsyncProcessor.ProcessWithParallelForEachAsync(_items);
+            return await ParallelAsyncProcessor.ProcessWithParallelForEachAsync(_items, DegreeOfParallelism);
         }
 
         [Benchmark]
         public async Task<int[]> Plinq()
         {
-            return await ParallelAsyncProcessor.ProcessWithPlinq(_items);
+            return await ParallelAsyncProcessor.ProcessWithPlinq(_items, DegreeOfParallelism);
         }
 
         [Benchmark]
         public async Task<int[]> PartitionedTaskWhenAll()
         {
-            return await ParallelAsyncProcessor.ProcessWithPartitionedTaskWhenAll(_items);
+            return await ParallelAsyncProcessor.ProcessWithPartitionedTaskWhenAll(_items, DegreeOfParallelism);
         }
     }
 }

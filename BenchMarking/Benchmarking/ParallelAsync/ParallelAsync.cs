@@ -19,11 +19,12 @@ namespace Benchmarking.ParallelAsync
         /// <summary>
         /// Process items using Parallel.ForEachAsync
         /// </summary>
-        public static async Task<int[]> ProcessWithParallelForEachAsync(int[] items)
+        public static async Task<int[]> ProcessWithParallelForEachAsync(int[] items, int degreeOfParallelism)
         {
             var results = new int[items.Length];
             
-            await Parallel.ForEachAsync(items.Select((item, index) => new { item, index }), async (pair, cancellationToken) =>
+            var options = new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism };
+            await Parallel.ForEachAsync(items.Select((item, index) => new { item, index }), options, async (pair, cancellationToken) =>
             {
                 var result = await SimulateNetworkCallAsync(pair.item);
                 results[pair.index] = result;
@@ -35,9 +36,9 @@ namespace Benchmarking.ParallelAsync
         /// <summary>
         /// Process items using Semaphore with Select=>Task and Task.WhenAll
         /// </summary>
-        public static async Task<int[]> ProcessWithSemaphoreTaskWhenAll(int[] items)
+        public static async Task<int[]> ProcessWithSemaphoreTaskWhenAll(int[] items, int degreeOfParallelism)
         {
-            using var semaphore = new SemaphoreSlim(Environment.ProcessorCount, Environment.ProcessorCount);
+            using var semaphore = new SemaphoreSlim(degreeOfParallelism, degreeOfParallelism);
             
             var tasks = items.Select(async item =>
             {
@@ -58,10 +59,11 @@ namespace Benchmarking.ParallelAsync
         /// <summary>
         /// Process items using PLINQ
         /// </summary>
-        public static async Task<int[]> ProcessWithPlinq(int[] items)
+        public static async Task<int[]> ProcessWithPlinq(int[] items, int degreeOfParallelism)
         {
             var tasks = items
                 .AsParallel()
+                .WithDegreeOfParallelism(degreeOfParallelism)
                 .Select(item => SimulateNetworkCallAsync(item))
                 .ToArray();
             
@@ -71,11 +73,11 @@ namespace Benchmarking.ParallelAsync
         /// <summary>
         /// Process items using Partitioned Task.WhenAll
         /// </summary>
-        public static async Task<int[]> ProcessWithPartitionedTaskWhenAll(int[] items)
+        public static async Task<int[]> ProcessWithPartitionedTaskWhenAll(int[] items, int degreeOfParallelism)
         {
             var partitions = Partitioner.Create(items, loadBalance: true);
             
-            var tasks = partitions.GetPartitions(Environment.ProcessorCount)
+            var tasks = partitions.GetPartitions(degreeOfParallelism)
                 .Select(async partition =>
                 {
                     var partitionResults = new List<int>();
