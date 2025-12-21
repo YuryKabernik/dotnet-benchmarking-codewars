@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using Benchmarking.ParallelAsync;
@@ -15,10 +13,10 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
     {
         private int[] _items = null!;
 
-        [Params(10, 75, 100)]
+        [Params(25, 100)]
         public int ItemCount;
 
-        [Params(4, 8, 16)]
+        [Params(8, 16)]
         public int DegreeOfParallelism;
 
         [GlobalSetup]

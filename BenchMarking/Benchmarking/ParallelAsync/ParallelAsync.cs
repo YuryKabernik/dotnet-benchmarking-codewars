@@ -13,8 +13,8 @@ namespace Benchmarking.ParallelAsync
         public static async Task<int[]> ProcessWithParallelForEachAsync(int[] items, int degreeOfParallelism)
         {
             var results = new int[items.Length];
-            
             var options = new ParallelOptions { MaxDegreeOfParallelism = degreeOfParallelism };
+
             await Parallel.ForEachAsync(items.Select((item, index) => new { item, index }), options, async (pair, cancellationToken) =>
             {
                 var result = await SimulateNetworkCallAsync(pair.item);
@@ -83,7 +83,7 @@ namespace Benchmarking.ParallelAsync
         /// </summary>
         private static async Task<int> SimulateNetworkCallAsync(int id)
         {
-            await Task.Delay(10);
+            await Task.Delay(TimeSpan.FromMicroseconds(10));
             return id * 2;
         }
 

@@ -75,7 +75,9 @@ namespace Benchmarking.UnitTestRunner.Runners
         public void ParallelAsyncBenchmark()
         {
             BenchmarkRunner.Run<ParallelAsyncBenchmark>(
-                this.config.AddDiagnoser(ThreadingDiagnoser.Default)
+                DefaultConfig.Instance
+                    .WithArtifactsPath("./ArtifactsBenchmark")
+                    .AddDiagnoser(ThreadingDiagnoser.Default)
             );
         }
     }
