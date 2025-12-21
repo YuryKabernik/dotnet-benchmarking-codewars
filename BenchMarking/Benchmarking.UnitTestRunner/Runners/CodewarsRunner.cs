@@ -1,3 +1,5 @@
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Running;
 using Benchmarking.UnitTestRunner.Benchmarks;
 
@@ -72,7 +74,9 @@ namespace Benchmarking.UnitTestRunner.Runners
         [Fact]
         public void ParallelAsyncBenchmark()
         {
-            BenchmarkRunner.Run<ParallelAsyncBenchmark>(this.config);
+            BenchmarkRunner.Run<ParallelAsyncBenchmark>(
+                this.config.AddDiagnoser(ThreadingDiagnoser.Default)
+            );
         }
     }
 }

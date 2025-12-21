@@ -8,32 +8,6 @@ namespace Benchmarking.ParallelAsync
     public static class ParallelAsyncProcessor
     {
         /// <summary>
-        /// Simulates an asynchronous network call
-        /// </summary>
-        private static async Task<int> SimulateNetworkCallAsync(int id)
-        {
-            await Task.Delay(100);
-            return id * 2;
-        }
-
-        /// <summary>
-        /// Processes a partition of items asynchronously
-        /// </summary>
-        private static async Task<List<int>> ProcessPartitionAsync(IEnumerator<int> partition)
-        {
-            var partitionResults = new List<int>();
-            using (partition)
-            {
-                while (partition.MoveNext())
-                {
-                    var result = await SimulateNetworkCallAsync(partition.Current);
-                    partitionResults.Add(result);
-                }
-            }
-            return partitionResults;
-        }
-
-        /// <summary>
         /// Process items using Parallel.ForEachAsync
         /// </summary>
         public static async Task<int[]> ProcessWithParallelForEachAsync(int[] items, int degreeOfParallelism)
@@ -82,7 +56,7 @@ namespace Benchmarking.ParallelAsync
             
             var tasks = partitions.GetPartitions(degreeOfParallelism)
                 .AsParallel()
-                .Select(partition => ProcessPartitionAsync(partition))
+                .Select(ProcessPartitionAsync)
                 .ToArray();
             
             var allResults = await Task.WhenAll(tasks);
@@ -97,11 +71,37 @@ namespace Benchmarking.ParallelAsync
             var partitions = Partitioner.Create(items, loadBalance: true);
             
             var tasks = partitions.GetPartitions(degreeOfParallelism)
-                .Select(partition => ProcessPartitionAsync(partition))
+                .Select(ProcessPartitionAsync)
                 .ToArray();
             
             var allResults = await Task.WhenAll(tasks);
             return allResults.SelectMany(r => r).ToArray();
+        }
+        
+        /// <summary>
+        /// Simulates an asynchronous network call
+        /// </summary>
+        private static async Task<int> SimulateNetworkCallAsync(int id)
+        {
+            await Task.Delay(10);
+            return id * 2;
+        }
+
+        /// <summary>
+        /// Processes a partition of items asynchronously
+        /// </summary>
+        private static async Task<List<int>> ProcessPartitionAsync(IEnumerator<int> partition)
+        {
+            var partitionResults = new List<int>();
+            using (partition)
+            {
+                while (partition.MoveNext())
+                {
+                    var result = await SimulateNetworkCallAsync(partition.Current);
+                    partitionResults.Add(result);
+                }
+            }
+            return partitionResults;
         }
     }
 }
