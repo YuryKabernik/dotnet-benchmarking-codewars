@@ -13,7 +13,7 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
     //  Kata.Maskify("Skippy");                                   // should return "##ippy"
     //  Kata.Maskify("Nananananananananananananananana Batman!"); // should return "####################################man!"
 
-    [SimpleJob(RuntimeMoniker.Net60)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     public class MaskifyBenchmark
     {
         [Params("4556364607935616", "64607935616", "1", "", "Skippy", "Nananananananananananananananana Batman!")]

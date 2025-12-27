@@ -4,7 +4,7 @@ using Benchmarking.Codewars;
 
 namespace Benchmarking.UnitTestRunner.Benchmarks
 {
-    [SimpleJob(RuntimeMoniker.Net60)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     public class SimplePigLatinBenchmark
     {
         [Params(

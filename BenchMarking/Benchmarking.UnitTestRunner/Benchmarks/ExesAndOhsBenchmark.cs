@@ -10,7 +10,7 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
     // XO("zpzpzpp") => true // when no 'x' and 'o' is present should return true
     // XO("zzoo") => false
     
-    [SimpleJob(RuntimeMoniker.Net60)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     public class ExesAndOhsBenchmarks
     {
         [Params("ooxx", "xooxx", "ooxXm", "zpzpzpp", "zzoo")]

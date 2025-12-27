@@ -11,7 +11,7 @@ namespace Benchmarking.UnitTestRunner.Benchmarks
     //  a = "c"
     //  longest(a, a) -> "abcdefghijklmnopqrstuvwxyz"
 
-    [SimpleJob(RuntimeMoniker.Net60)]
+    [SimpleJob(RuntimeMoniker.Net80)]
     public class TwoToOneBenchmark
     {
         [Params("xyaabbbccccdefww", "xxxxyyyyabklmopq")]

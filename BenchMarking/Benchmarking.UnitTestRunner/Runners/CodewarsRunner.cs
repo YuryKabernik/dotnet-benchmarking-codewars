@@ -1,3 +1,5 @@
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Running;
 using Benchmarking.UnitTestRunner.Benchmarks;
 
@@ -67,6 +69,16 @@ namespace Benchmarking.UnitTestRunner.Runners
         public void PigIt()
         {
             BenchmarkRunner.Run<SimplePigLatinBenchmark>(this.config);
+        }
+
+        [Fact]
+        public void ParallelAsyncBenchmark()
+        {
+            BenchmarkRunner.Run<ParallelAsyncBenchmark>(
+                DefaultConfig.Instance
+                    .WithArtifactsPath("./ArtifactsBenchmark")
+                    .AddDiagnoser(ThreadingDiagnoser.Default)
+            );
         }
     }
 }
